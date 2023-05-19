@@ -10,7 +10,7 @@ import Foundation
 class WeatherService {
     
     public static let shared = WeatherService()
-    private let weatherApiKey = "8005b6358f5db56bec22fd743539eea1"
+    public let weatherApiKey = "8005b6358f5db56bec22fd743539eea1"
     
     func fetchWeather(_ location: String, completion: @escaping (WeatherDataModel?) -> Void) {
         
