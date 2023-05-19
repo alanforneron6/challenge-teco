@@ -12,6 +12,7 @@
 		1F3689972A16460300A3DEDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F3689962A16460300A3DEDC /* Assets.xcassets */; };
 		1F36899A2A16460300A3DEDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F3689982A16460300A3DEDC /* LaunchScreen.storyboard */; };
 		1F3689A42A16746600A3DEDC /* WeatherDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3689A32A16746600A3DEDC /* WeatherDataModel.swift */; };
+		1F3689A72A167E1500A3DEDC /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3689A62A167E1500A3DEDC /* WeatherService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		1F3689992A16460300A3DEDC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1F36899B2A16460300A3DEDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F3689A32A16746600A3DEDC /* WeatherDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataModel.swift; sourceTree = "<group>"; };
+		1F3689A62A167E1500A3DEDC /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		1F36898C2A1645FF00A3DEDC /* WeatherTeco */ = {
 			isa = PBXGroup;
 			children = (
+				1F3689A52A167DBF00A3DEDC /* Service */,
 				1F3689A22A16743700A3DEDC /* Model */,
 				1F3689A12A1646AA00A3DEDC /* Files */,
 				1F36898D2A1645FF00A3DEDC /* AppDelegate.swift */,
@@ -78,6 +81,14 @@
 				1F3689A32A16746600A3DEDC /* WeatherDataModel.swift */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		1F3689A52A167DBF00A3DEDC /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				1F3689A62A167E1500A3DEDC /* WeatherService.swift */,
+			);
+			name = Service;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,6 +161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F3689A72A167E1500A3DEDC /* WeatherService.swift in Sources */,
 				1F3689922A1645FF00A3DEDC /* ViewController.swift in Sources */,
 				1F36898E2A1645FF00A3DEDC /* AppDelegate.swift in Sources */,
 				1F3689A42A16746600A3DEDC /* WeatherDataModel.swift in Sources */,
