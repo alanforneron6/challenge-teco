@@ -44,4 +44,37 @@ class WeatherService {
         
         task.resume()
     }
+    
+    func fetchWeather30(latitude: Double, longitude: Double, completion: @escaping (Result<WeatherData, Error>) -> Void) {
+        let urlString = "https://api.openweathermap.org/data/3.0/onecall?lat=\(latitude)&lon=\(longitude)&lang=es&exclude=current,minutely,alerts,hourly&appid=\(weatherApiKey)&units=metric"
+        
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+                    let weatherData = try decoder.decode(WeatherData.self, from: data)
+                    print("foo -1", weatherData)
+                    completion(.success(weatherData))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+        task.resume()
+    }
+}
+
+enum NetworkError: Error {
+    case invalidURL
 }
