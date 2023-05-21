@@ -103,7 +103,7 @@ class CurrentViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         searchBar.delegate = self
         filteredData = data
-        navigationItem.title = String.navTitle
+        title = String.navTitle
     }
     
     private func buildViewHierarchy() {

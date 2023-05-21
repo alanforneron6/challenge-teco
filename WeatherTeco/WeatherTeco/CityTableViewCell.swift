@@ -11,7 +11,7 @@ class CityTableViewCell: UITableViewCell {
     let cityLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.boldSystemFont(ofSize: CGFloat.lblSize)
         return label
     }()
 
@@ -36,10 +36,18 @@ class CityTableViewCell: UITableViewCell {
     
     private func setUpConstraints() {
         NSLayoutConstraint.activate([
-            cityLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            cityLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            cityLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            cityLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            cityLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: CGFloat.leading),
+            cityLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: CGFloat.trailing),
+            cityLabel.topAnchor.constraint(equalTo: topAnchor, constant: CGFloat.top),
+            cityLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: CGFloat.bottom)
         ])
     }
+}
+
+fileprivate extension CGFloat {
+    static let leading = 16 as CGFloat
+    static let trailing = -16 as CGFloat
+    static let top = 8 as CGFloat
+    static let bottom = -8 as CGFloat
+    static let lblSize = 16 as CGFloat
 }
