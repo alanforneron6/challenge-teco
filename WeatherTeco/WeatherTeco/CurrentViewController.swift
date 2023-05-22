@@ -31,7 +31,6 @@ class CurrentViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.configuration = .filled()
-       // button.configuration?.imagePadding = 8
         button.addTarget(self, action: #selector(showLastCity), for: .touchUpInside)
         button.setTitle(String.lastButtonTitle, for: .normal)
         return button
