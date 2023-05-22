@@ -11,6 +11,7 @@ import CoreLocation
 class CurrentViewController: UIViewController {
     private var tableView = UITableView()
     private let locationManager = LocationManager()
+    private var weatherCityKey = "Weathercity"
     
     let data = String.cities.sorted()
 
@@ -19,8 +20,20 @@ class CurrentViewController: UIViewController {
     private lazy var extendedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.configuration = .filled()
+        button.configuration?.imagePadding = 8
         button.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
         button.setTitle(String.buttonTitle, for: .normal)
+        return button
+    }()
+
+    private lazy var lastCityButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.configuration = .filled()
+       // button.configuration?.imagePadding = 8
+        button.addTarget(self, action: #selector(showLastCity), for: .touchUpInside)
+        button.setTitle(String.lastButtonTitle, for: .normal)
         return button
     }()
 
@@ -30,7 +43,17 @@ class CurrentViewController: UIViewController {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.text = "..."
-        label.font = UIFont.systemFont(ofSize: 24)
+        label.font = UIFont.systemFont(ofSize: 20)
+        return label
+    }()
+    
+    private lazy var LastCity: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.text = "..."
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
@@ -41,19 +64,44 @@ class CurrentViewController: UIViewController {
         return searchBar
     }()
     
+    private lazy var imgView: UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.contentMode = .scaleAspectFit
+        return image
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setUpView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        extendedButton.configuration?.showsActivityIndicator = false
+        LastCity.text = "..."
+    }
+    
     @objc func searchButtonTapped(_ sender: UIButton) {
+        extendedButton.configuration?.showsActivityIndicator = true
         guard let searchText = searchBar.text, !searchText.isEmpty else {
             return
         }
+        saveLastCity(text: searchText)
         searchCoordinates(searchText: searchText)
     }
+    
+    @objc func showLastCity() {
+        guard let city = UserDefaults.standard.string(forKey: weatherCityKey) else { return }
+        LastCity.text = city
+    }
 
+    private func saveLastCity(text: String) {
+        UserDefaults.standard.set(text, forKey: weatherCityKey)
+    }
+    
+    
     func searchCoordinates(searchText: String) {
         locationManager.geocodeAddress(searchText) { [weak self] result in
                     switch result {
@@ -90,6 +138,18 @@ class CurrentViewController: UIViewController {
         navigationController?.pushViewController(forecastViewController, animated: true)
     }
     
+    func fetchImage(icon: String) {
+        let urlString = "https://openweathermap.org/img/wn/\(icon)@2x.png"
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else { return }
+            DispatchQueue.main.async { [weak self] in
+                let image = UIImage(data: data)
+                self?.imgView.image = image
+            }
+        }.resume()
+    }
+    
     private func setUpView() {
         buildViewHierarchy()
         setUpConstraints()
@@ -107,14 +167,19 @@ class CurrentViewController: UIViewController {
     }
     
     private func buildViewHierarchy() {
-        [weatherLabel, searchBar, tableView, extendedButton].forEach{view.addSubview($0)}
+        [weatherLabel, searchBar, tableView, extendedButton, lastCityButton, LastCity,imgView].forEach{view.addSubview($0)}
     }
     
     private func setUpConstraints() {
         NSLayoutConstraint.activate([
             weatherLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            weatherLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            weatherLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            weatherLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 36),
+            weatherLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -36),
+            
+            imgView.trailingAnchor.constraint(equalTo: weatherLabel.leadingAnchor, constant: 36),
+            imgView.widthAnchor.constraint(equalToConstant: 50),
+            imgView.heightAnchor.constraint(equalToConstant: 50),
+            imgView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 16),
 
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -127,7 +192,15 @@ class CurrentViewController: UIViewController {
 
             extendedButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             extendedButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            extendedButton.topAnchor.constraint(equalTo: weatherLabel.bottomAnchor, constant: 26)
+            extendedButton.topAnchor.constraint(equalTo: weatherLabel.bottomAnchor, constant: 26),
+            
+            lastCityButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            lastCityButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            lastCityButton.topAnchor.constraint(equalTo: extendedButton.bottomAnchor, constant: 26),
+            
+            LastCity.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            LastCity.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            LastCity.topAnchor.constraint(equalTo: lastCityButton.bottomAnchor, constant: 26)
         ])
     }
 }
@@ -140,6 +213,7 @@ extension CurrentViewController: UISearchBarDelegate {
             
             DispatchQueue.main.async {
                 self?.weatherLabel.text = "Temperatura: \(weatherData.main.temp)°C\n \(weatherData.weather[0].description)"
+                self?.fetchImage(icon: weatherData.weather[0].icon)
             }
         }
     }
@@ -180,6 +254,7 @@ fileprivate extension String {
     static let cellName = "CityCell"
     static let searchTitle = "Ingrese una ubicación"
     static let buttonTitle = "Mostrar pronóstico extendido"
+    static let lastButtonTitle = "Última localidad consultada"
     static let cities = ["La Plata", "San Fernando del Valle de Catamarca", "Resistencia", "Rawson",
                                    "Corrientes", "Córdoba", "Paraná", "Formosa",
                                    "San Salvador de Jujuy", "Santa Rosa", "La Rioja", "Mendoza",

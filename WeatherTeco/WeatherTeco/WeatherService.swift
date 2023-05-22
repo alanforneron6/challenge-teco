@@ -10,7 +10,9 @@ import Foundation
 class WeatherService {
     public static let shared = WeatherService()
     
-    func fetchWeather(_ location: String, completion: @escaping (WeatherDataModel?) -> Void) {
+    private init() {}
+    
+    func fetchWeather(_ location: String, completion: @escaping (CurrentWeatherDataModel?) -> Void) {
         guard let encodedLocation = location.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             completion(nil)
             return
@@ -31,7 +33,7 @@ class WeatherService {
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let weatherData = try decoder.decode(WeatherDataModel.self, from: data)
+                let weatherData = try decoder.decode(CurrentWeatherDataModel.self, from: data)
                 completion(weatherData)
             } catch {
                 print(error.localizedDescription.description)

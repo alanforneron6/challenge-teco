@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WeatherDataModel: Decodable {
+struct CurrentWeatherDataModel: Decodable {
     let main: Main
     let weather: [Weather]
 }
@@ -18,15 +18,17 @@ struct Main: Decodable {
 
 struct Weather: Decodable {
     let description: String
+    let icon: String
     
     private enum CodingKeys: String, CodingKey {
         case description = "description"
+        case icon
     }
 }
 
 struct LargeWeatherDataModel: Decodable {
     let coord: CoordModel
-    let weather: [WeatherModel]
+    let weather: [LargeWeatherModel]
     let base: String
     let main: MainModel
     let visibility: Int
@@ -45,7 +47,7 @@ struct CoordModel: Decodable {
     let lat: Double
 }
 
-struct WeatherModel: Decodable {
+struct LargeWeatherModel: Decodable {
     let id: Int
     let main: String
     let description: String
